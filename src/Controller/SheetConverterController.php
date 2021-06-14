@@ -96,14 +96,14 @@ class SheetConverterController extends AbstractController
     {
         $reader = new $readerClass();
 
-        if ($options['type'] === 'csv') {
+        if ($options['sourceType'] === 'csv') {
             $reader->setDelimiter($options['delimiter'] ?? ',');
             $reader->setEnclosure($opions['enclosure'] ?? '"');
         }
 
         $csvObj = $reader->load($file->getPathname());
 
-        $fileName = 'tmp/temp_'.date('YmdHis').'.'.$options['type'];
+        $fileName = 'tmp/temp_'.date('YmdHis').'.'.$options['destType'];
 
         $writer = new $writerClass($csvObj);
         $writer->save($fileName);
@@ -116,7 +116,7 @@ class SheetConverterController extends AbstractController
             fclose($inputStream);
         });
 
-        $response->headers->set('Content-Disposition', 'attachment; filename=' . $options['filename']);
+        $response->headers->set('Content-Disposition', 'attachment; filename=' . $fileName);
         $response->headers->set('Cache-Control', 'max-age=0');
 
         return $response;
