@@ -22,7 +22,7 @@ class UploadFileType extends AbstractType
             ],
             'constraints' => [
                 new File([
-                    'maxSize' => $options['maxSize'],
+                    'maxSize' => $options['maxSize'].'m',
                     'mimeTypes' => $options['mimeTypes'],
                 ])
             ]
@@ -32,7 +32,7 @@ class UploadFileType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'maxSize' => '5m',
+            'maxSize' => '5',
             'mimeTypes' => [],
             'actionUrl' => '/'
         ]);

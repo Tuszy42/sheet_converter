@@ -36,3 +36,19 @@
     color: $font-color-light;
   }
 }
+
+.loader {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  margin-top: auto;
+  margin-bottom: auto;
+  border-top: 3px solid transparent;
+  border-left: 3px solid $nav-bg-color-dark;
+  border-right: 3px solid $nav-bg-color-dark;
+  border-bottom: 3px solid $nav-bg-color-dark;
+  animation-name: spin;
+  animation-duration: 1.5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}

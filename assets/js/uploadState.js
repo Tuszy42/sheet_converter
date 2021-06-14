@@ -8,9 +8,10 @@ class UploadStateHandler {
     sourceType;
     sizeLimit; //in megabytes
     _file;
+    _loading;
 
     set file(file) {
-        if(file){
+        if(file && this.isValid(file)){
             domElements.fileInfo.name.innerText = file.name;
             domElements.fileInfo.size.innerText = prettyBytes(file.size);
             fadeOut(domElements.inputHolder, 0.5).then(() => {
@@ -31,30 +32,37 @@ class UploadStateHandler {
     }
 
     set loading(loading) {
+        if(loading){
+            domElements.uploadSpinner.style.display = 'block';
+        } else {
+            domElements.uploadSpinner.style.display = 'none';
+        }
     }
 
-    setFile(file) {
+    isValid(file) {
         if (this.sourceType === undefined) {
             throw new Error('No sourcetype set');
         }
-        /*const ext = getFileExtension(file.name);
+        const ext = getFileExtension(file.name);
         if(ext !== this.sourceType) {
             throw new Error(`The file has to be of type '${this.sourceType}', is '${ext}' instead`);
-        }*/
+        }
         if(file.size/1000/1000 > this.sizeLimit) {
             throw new Error(`The file size (${file.size/1000/1000}mb) exceeds the limit (${this.sizeLimit}mb)`);
         }
-        this.file = file;
+        return true
     }
 
-    setSourceType(type) {
-        this.sourceType = type;
+    reset() {
+        this.sourceType = undefined;
+        this.file = undefined;
     }
 
     async upload() {
         const form = domElements.form(this.sourceType);
         const formData = new FormData(form);
         try {
+            this.loading = true;
             const response = await axios.post(
                 form.getAttribute('action'),
                 formData,
@@ -62,6 +70,7 @@ class UploadStateHandler {
                     headers: {
                         'content-type': 'multipart/form-data',
                     },
+                    responseType: 'blob'
                 },
             );
             const url = window.URL.createObjectURL(new Blob([response.data], { type: response.headers['content-type'] }));
@@ -71,8 +80,11 @@ class UploadStateHandler {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+            this.reset();
         } catch (err) {
-            console.log(err)
+            console.error(err);
+        } finally {
+            this.loading = false;
         }
     }
 }

@@ -1,5 +1,5 @@
 import stateHandler from './uploadState';
-import{ setErrorMessage } from './utils'
+import { setErrorMessage } from './utils'
 
 const uploadState = stateHandler.getStateHandler();
 
@@ -19,8 +19,8 @@ document.getElementsByClassName('file-upload__input').forEach(input => {
     input.addEventListener('change', event => {
         try {
             const [selectedFile] = event.target.files;
-            uploadState.setSourceType(input.getAttribute('data-convert-from'));
-            uploadState.setFile(selectedFile);
+            uploadState.sourceType = input.getAttribute('data-convert-from');
+            uploadState.file = selectedFile;
         } catch (e) {
             setErrorMessage(e);
         }

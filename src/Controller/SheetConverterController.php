@@ -6,17 +6,13 @@ namespace App\Controller;
 
 use App\Form\UploadFileType;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx as XlsxReader;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx as XlsxWriter;
 use PhpOffice\PhpSpreadsheet\Reader\Csv as CsvReader;
 use PhpOffice\PhpSpreadsheet\Writer\Csv as CsvWriter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\File\Stream;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class SheetConverterController extends AbstractController
 {
@@ -45,7 +41,7 @@ class SheetConverterController extends AbstractController
         ]);
     }
 
-    public function convertXlsxToCsvAction(Request $request): Response|string
+    public function convertXlsxToCsvAction(Request $request): Response
     {
         try {
             $form = $this->createForm(UploadFileType::class);
@@ -56,24 +52,27 @@ class SheetConverterController extends AbstractController
                 $file = $form->get('file')->getData();
 
                 $options = [
-                    'type' => 'xlsx',
-                    'filename' => 'new.csv',
+                    'sourceType' => 'xlsx',
+                    'destType' => 'csv',
                 ];
 
-                return $this->convertFileToResponse($file, XlsxReader::class, CsvWriter::class, $options);
+                $this->convertFileToResponse($file, XlsxReader::class, CsvWriter::class, $options);
             }
-            return $this->json(['success' => 'not great']);
+            $errors = [];
+            foreach($form->getErrors(true) as $error){
+                $errors[] = $error->getMessage();
+            }
+            return $this->json(['messages' => $errors], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    public function convertCsvToXlsxAction(Request $request): Response|string
+    public function convertCsvToXlsxAction(Request $request): Response
     {
         try {
             $form = $this->createForm(UploadFileType::class);
             $form->handleRequest($request);
-
             if ($form->isSubmitted() && $form->isValid()) {
 
                 $file = $form->get('file')->getData();
@@ -81,18 +80,21 @@ class SheetConverterController extends AbstractController
                 $options = [
                     'sourceType' => 'csv',
                     'destType' => 'xlsx',
-                    'filename' => 'new.xlsx',
                 ];
 
-                return $this->convertFileToResponse($file, CsvReader::class, XlsxWriter::class, $options);
+                $this->convertFileToResponse($file, CsvReader::class, XlsxWriter::class, $options);
             }
-            return $this->json(['success' => 'not great']);
+            $errors = [];
+            foreach($form->getErrors(true) as $error){
+                $errors[] = $error->getMessage();
+            }
+            return $this->json(['messages' => $errors], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return new Response($e->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private function convertFileToResponse(UploadedFile $file, $readerClass, $writerClass, array $options = []): Response
+    private function convertFileToResponse(UploadedFile $file, $readerClass, $writerClass, array $options = []) : void
     {
         $reader = new $readerClass();
 
@@ -103,22 +105,12 @@ class SheetConverterController extends AbstractController
 
         $csvObj = $reader->load($file->getPathname());
 
-        $fileName = 'tmp/temp_'.date('YmdHis').'.'.$options['destType'];
-
+        $fileName = 'export_'.date('YmdHis').'.'.$options['destType'];
         $writer = new $writerClass($csvObj);
-        $writer->save($fileName);
+        header('Content-Disposition: attachment; filename=' . $fileName);
+        header('Cache-Control: max-age=0');
 
-        $response  = new StreamedResponse(function() use ($fileName){
-            $outputStream = fopen('php://output', 'wb');
-            $inputStream = fopen($fileName,'r');
-            stream_copy_to_stream($inputStream, $outputStream);
-            fclose($outputStream);
-            fclose($inputStream);
-        });
-
-        $response->headers->set('Content-Disposition', 'attachment; filename=' . $fileName);
-        $response->headers->set('Cache-Control', 'max-age=0');
-
-        return $response;
+        $writer->save('php://output');
+        die;
     }
 }

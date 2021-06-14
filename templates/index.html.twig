@@ -12,13 +12,14 @@
             will download automatically - simple as that
         </div>
         <div class="row justify-centered" id="input-holder" {#style="display: none;"#}>
-            {% include 'uploadBtn.html.twig' with { 'type': 'xlsx', 'btnText': 'XLSX <i class="fas fa-long-arrow-alt-right"></i> CSV', 'form': xlsxForm } %}
-            {% include 'uploadBtn.html.twig' with { 'type': 'csv', 'btnText': 'CSV <i class="fas fa-long-arrow-alt-right"></i> XLSX', 'form': csvForm } %}
+            {% include 'uploadBtn.html.twig' with { 'type': 'xlsx', 'btnText': 'XLSX => CSV', 'form': xlsxForm } %}
+            {% include 'uploadBtn.html.twig' with { 'type': 'csv', 'btnText': 'CSV => XLSX', 'form': csvForm } %}
         </div>
         <div class="pre-upload row row--column align-center" id="file-info-holder" style="opacity: 0; display: none;" >
             <div class="row">
                 <button class="button button--danger" id="btn-cancel">Cancel</button>
                 <button class="button button--success" id="btn-convert">Convert</button>
+                <div class="loader" id="upload-spinner" style="display: none"></div>
             </div>
             <div class="row">
                 <table>
@@ -33,6 +34,6 @@
                 </table>
             </div>
         </div>
-        <div class="row justify-centered--centered text--bold" id="msg-container"></div>
+        <div class="row justify-centered text--bold" id="msg-container"></div>
     </div>
 {% endblock %}
