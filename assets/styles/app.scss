@@ -1,0 +1,11 @@
+@import 'variables';
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@200;400;600&display=swap');
+body {
+    font-family: 'Montserrat', sans-serif;
+    background-color: $body-bg-color;
+    color: $font-color;
+}
+#msg-container {
+    color: $text-color-danger;
+}

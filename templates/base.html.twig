@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheet converter</title>
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+    {% endblock %}
+    <script>
+        const configs = {{ config is defined ? config|json_encode()|raw : '{}' }};
+    </script>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar--dark">
+    <div class="navbar__brand text--thin">
+        Sheet converter
+    </div>
+    <div class="navbar__item navbar__item--right">
+        <a href="https://github.com/Tuszy42/sheet_converter" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+    </div>
+</nav>
+{% block body %}{% endblock %}
+<footer class="footer">
+    <span class="footer__element">by Robert Motyka</span>
+    <span class="footer__element">2021</span>
+</footer>
+</body>
+</html>

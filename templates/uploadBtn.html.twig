@@ -1,0 +1,6 @@
+<div class="file-upload">
+    <button class="button button--success" data-activator-for="{{ type }}">{{ btnText|raw }}</button>
+    {{ form_start(form, { 'attr': { 'id': 'form_' ~ type } }) }}
+    {{ form_widget(form.file, { 'attr': { 'data-convert-from': type, 'class': 'file-upload__input' } }) }}
+    {{ form_end(form)}}
+</div>

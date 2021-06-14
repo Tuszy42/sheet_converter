@@ -1,0 +1,12 @@
+sheet_converter_index:
+  path: /
+  controller: App\Controller\SheetConverterController::indexAction
+  methods: GET
+sheet_converter_csv_to_xlsx:
+  path: /csv_to_xlsx
+  controller: App\Controller\SheetConverterController::convertCsvToXlsxAction
+  methods: POST
+sheet_converter_xlsx_to_csv:
+  path: /xlsx_to_csv
+  controller: App\Controller\SheetConverterController::convertXlsxToCsvAction
+  methods: POST

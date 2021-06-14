@@ -1,0 +1,16 @@
+.container{
+  margin: 3em 2em 2em;
+}
+.row {
+  display: flex;
+  margin: 0.2em;
+  &.row--column {
+    flex-direction: column;
+  }
+}
+.justify-centered {
+  justify-content: center;
+}
+.align-center {
+  align-items: center;
+}

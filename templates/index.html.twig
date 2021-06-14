@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <header class="card card--header">
+            <div class="title text--center">Solving you conversion needs</div>
+            <div class="subtitle text--italic">with just a couple of clicks, you can convert your xslx file
+                into a csv file, or the other way around
+            </div>
+        </header>
+        <div class="subtitle text--center">Use the buttons below to select a file for conversion, and the converted file
+            will download automatically - simple as that
+        </div>
+        <div class="row justify-centered" id="input-holder" {#style="display: none;"#}>
+            {% include 'uploadBtn.html.twig' with { 'type': 'xlsx', 'btnText': 'XLSX <i class="fas fa-long-arrow-alt-right"></i> CSV', 'form': xlsxForm } %}
+            {% include 'uploadBtn.html.twig' with { 'type': 'csv', 'btnText': 'CSV <i class="fas fa-long-arrow-alt-right"></i> XLSX', 'form': csvForm } %}
+        </div>
+        <div class="pre-upload row row--column align-center" id="file-info-holder" style="opacity: 0; display: none;" >
+            <div class="row">
+                <button class="button button--danger" id="btn-cancel">Cancel</button>
+                <button class="button button--success" id="btn-convert">Convert</button>
+            </div>
+            <div class="row">
+                <table>
+                    <tr>
+                        <td class="text--bold">Name:</td>
+                        <td id="file-name" class="pl-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="text--bold">Size:</td>
+                        <td id="file-size" class="pl-3"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row justify-centered--centered text--bold" id="msg-container"></div>
+    </div>
+{% endblock %}
