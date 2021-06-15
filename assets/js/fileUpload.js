@@ -26,5 +26,5 @@ document.getElementsByClassName('file-upload__input').forEach(input => {
         }
     });
 });
-document.getElementById('btn-cancel').addEventListener('click', () => uploadState.file=null);
+document.getElementById('btn-cancel').addEventListener('click', () => uploadState.reset());
 document.getElementById('btn-convert').addEventListener('click', () => uploadState.upload());

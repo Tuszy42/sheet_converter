@@ -56,6 +56,7 @@ class UploadStateHandler {
     reset() {
         this.sourceType = undefined;
         this.file = undefined;
+        domElements.msgContainer.innerText = '';
     }
 
     async upload() {
